@@ -86,10 +86,8 @@ void fuzzy(void)
 		error = 30;
 	}
 	
-	error += 30;
-	
 	unsigned int defuzzy_index = ((unsigned int)(error));
-	OCR1B += fuzzy_pwm[defuzzy_index];
+	OCR1B += fuzzy_pwm[defuzzy_index + 30];
 	
 	if(OCR1B < 0)
 	{
@@ -124,11 +122,11 @@ ISR(TIMER0_OVF_vect)
 		TIMER0_CNT = 0;
 	}
 	USART_Transmit(255);
-	USART_Transmit(20);
-	USART_Transmit(30);
-	USART_Transmit(40);
-	USART_Transmit(50);
-	USART_Transmit(120);
+	USART_Transmit(TARGET_TICKS);
+	USART_Transmit(TICKS);
+	USART_Transmit(error);
+	USART_Transmit(0);
+	USART_Transmit(0);
 	//USART_Transmit((unsigned char)(error));
 	//update_display_buffer(REVOLUTIONS_PER_MINUTE);
 	TICKS = 0;
