@@ -13,20 +13,20 @@
 #include "pid.h"
 #include "usart.h"
 #include "pwm.h"
+#include "adc_driver.h"
 
 int main(void)
 {
-	TARGET_TICKS = 13;
+	TARGET_TICKS = 23;
     init_display();
 	init_optocoupler();
 	init_pid();
 	USART_Init(MYUBRR);
 	init_pwm();
+	ADC_init();
 	dummy = 90;
-	OCR1A = 0;
 	sei();
-	OCR1B = 0;
-	_delay_ms(50);
+	_delay_ms(150);
 
     while (1)
     {

@@ -9,6 +9,7 @@
 #include "pid.h"
 #include "usart.h"
 #include "display.h"
+#include "adc_driver.h"
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
@@ -23,6 +24,8 @@ float integral = 0;
 float derivative = 0;
 float previous_error = 0;
 float pid_result = 0;
+
+uint16_t supply_voltage;
 
 void init_optocoupler(void)
 {
@@ -113,6 +116,8 @@ ISR(INT0_vect)  // external interrupt_zero ISR (INT0)
 // every 16.384 ms
 ISR(TIMER0_OVF_vect)
 {
+	supply_voltage = ADC_get_value(0);
+	supply_voltage >>= 2;
 	TIMER0_CNT ++;
 	pid();
 	//fuzzy();
@@ -124,7 +129,7 @@ ISR(TIMER0_OVF_vect)
 	USART_Transmit(255);
 	USART_Transmit(TARGET_TICKS);
 	USART_Transmit(TICKS);
-	USART_Transmit(error);
+	USART_Transmit((uint8_t)(supply_voltage));
 	USART_Transmit(0);
 	USART_Transmit(0);
 	//USART_Transmit((unsigned char)(error));
